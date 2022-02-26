@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>One Extra Step :: Open in Firefox</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <h1>One Extra Step</h1>
+    <p>For the extension to open links in the Firefox browser, please download, unzip and install the open-source native client.</p>
+    <ul id="steps">
+      <li class="step1">Click <a href="#" data-cmd="download">here</a> to download the package for you OS (Window, Mac, and Linux operating systems are currently supported) or click <a href="https://github.com/andy-portmen/native-client/releases" target="_blank">here</a> to browse all available download options.</li>
+      <li>Extract the downloaded package in a local directory</li>
+      <li class="linux">Now open a terminal in this directory (the directory that contains install.sh and uninstall.sh) and run <code>./install.sh</code></li>
+      <li class="windows">Now double-click the <code>install.bat</code> file</li>
+    </ul>
+    <div class="flex">
+      <input type="button" data-cmd="check" value="Check Connection Status">
+    </div>
+    <p class="note canhide">The installer script copies a few files to two different locations for your browser to be able to detect this native client. If you already have NodeJS in your system, the installed version of NodeJS will be used. So please make sure you have an up-to-date version of NodeJS installed. If you don't have this application, the portable version will be used. Read more <a target="_blank" href="https://github.com/andy-portmen/native-client">here</a>.</p>
+    <p class="note">To make sure the native client is accessible, click on the "<a href="#" data-cmd="check">Check Connection</a>" button. <span id="alternative">If you still get this page even when the "Check Button" reports successful connection, it means the application cannot be accessed (path is not correct in the <a href="#" data-cmd="options">options page</a>)</span>. If the path to the executable is correct and the native client is connected, you can debug the connection by enabling console logs in <a target="_blank" href="https://www.chromium.org/for-testers/enable-logging">Chrome, Edge, Opera</a>, or <a target="_blank" href="https://developer.mozilla.org/docs/Tools/Browser_Console">Firefox</a>.</p>
+    <p class="note canhide">To completely remove this native client, run <code class="linux">./uninstall.sh</code><code class="windows">uninstall.bat</code>.</p>
+
+    <details>
+      <summary>Firefox's <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options" target="_blank">Command Options</a></summary>
+        <table>
+        <thead>
+        <tr>
+          <th>Command</th>
+          <th>Result</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>-browser</code></td>
+            <td>Start with the browser component. Firefox and SeaMonkey only.</td>
+          </tr>
+          <tr>
+            <td><code>-foreground</code></td>
+            <td>Make this instance the active application.</td>
+          </tr>
+          <tr>
+            <td><code>-headless</code></td>
+            <td>Runs Firefox in headless mode, which is very useful for purposes such as debugging and automated testing.</td>
+          </tr>
+          <tr>
+            <td><code>-new-window URL</code></td>
+            <td>Open URL in a new window. Firefox and SeaMonkey2.x only.</td>
+          </tr>
+          <tr>
+            <td><code>-private</code></td>
+            <td>Opens Firefox in permanent private browsing mode. Firefox 3.6 and later only.</td>
+          </tr>
+          <tr>
+            <td><code>-search term</code></td>
+            <td>Search term with your default search engine. Firefox and SeaMonkey 2.1 and later only.</td>
+          </tr>
+          <tr>
+            <td><code>-url URL</code></td>
+            <td>Open URL in a new tab or window, depend on the browser option.</td>
+          </tr>
+        </tbody>
+      </table>
+    </details>
+
+    <details open="">
+      <summary>Installation Guide</summary>
+      <ul>
+        <li>Mac &amp; Linux: <a href="https://www.youtube.com/watch?v=2asPoW2gJ-c" target="_blank">YouTube</a></li>
+        <li>Windows: <a href="https://www.youtube.com/watch?v=yZAoy8SOd7o" target="_blank">YouTube</a></li>
+        <li>Usage Preview: <a href="https://www.youtube.com/watch?v=W6hSo5Sx5tk">Windows</a></li>
+      </ul>
+    </details>
+
+    <div id="notify"></div>
+    <script src="index.js"></script>
+  </body>
+</html>

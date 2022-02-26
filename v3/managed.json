@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "properties": {
+    "urls": {
+      "title": "List of URLs",
+      "description": "List of URLs to open with the Firefox browser when the link is opened with left-click",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hosts": {
+      "title": "List of hosts",
+      "description": "List of domains to open with the Firefox browser when the link is opened with left-click",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reverse": {
+      "title": "Enable the reversed left-click mode",
+      "type": "boolean"
+    },
+    "faqs": {
+      "title": "Open the FAQs page on updates",
+      "type": "boolean"
+    }
+  }
+}

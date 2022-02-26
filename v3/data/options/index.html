@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Open In Firefox :: Options Page</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+
+<body>
+  <h2>Open with Left-Click</h2>
+  <table class="tbl">
+    <tr>
+      <td colspan="2" style="text-align: left; white-space: normal;"><a target="_blank" data-href="faq16">Comma-separated list of domains</a> to open with the external browser when the link is opened with left-click<sup>1</sup></td>
+    </tr>
+    <tr>
+      <td colspan="2"><textarea id="hosts" style="width: 100%" rows="3" placeholder="e.g.: www.google.com, bing.com"></textarea></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: left; white-space: normal;">Comma-separated list of URLs to open with the external browser when the link is opened with left-click. This list supports the new <a target="_blank" data-href="faq26">URL Pattern API</a>. You can use "*" to match any character, or non-capturing groups (e.g. <code>/books{/old}?</code>) to make parts of a pattern optional or be matched multiple times. To have arbitrarily complex regex matches use a pattern like <code>/books/(^\d)</code><sup>1</sup></td>
+    </tr>
+    <tr>
+      <td colspan="2"><textarea id="urls" style="width: 100%" rows="3" placeholder="e.g.: https://www.google.com/, https://bing.com/"></textarea></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: left; white-space: normal;">Comma-separated list of keywords to open with the external browser when the link is opened with left-click<sup>1</sup></td>
+    </tr>
+    <tr>
+      <td colspan="2"><textarea id="keywords" style="width: 100%" rows="3" placeholder="e.g.: firefox"></textarea></td>
+    </tr>
+  </table>
+  <h2>Open With <a target="_blank" data-href="faq7">Keyboard and Mouse Click</a> Combinations</h2>
+
+  <div class="grid">
+    <label for="enabled">Enabled</label>
+    <input id="enabled" type="checkbox">
+    <span>Combination<sup>4</sup></span>
+    <div class="clc">
+      <select id="button">
+        <option value=0>Left Click</option>
+        <option value=1 disabled="true">Middle Click</option>
+        <option value=2 disabled="true">Right Click</option>
+      </select>
+      <span>+</span>
+      <label>Ctrl <input id="ctrlKey" type="checkbox"></label>
+      <span>+</span>
+      <label>Alt <input id="altKey" type="checkbox"></label>
+      <span>+</span>
+      <label>Shift <input id="shiftKey" type="checkbox"></label>
+      <span>+</span>
+      <label>Meta <input id="metaKey" type="checkbox"></label>
+    </div>
+    <label for="topRedict">Top-level navigation<sup>6</sup></label>
+    <input type="checkbox" id="topRedict">
+  </div>
+  <h2>Misc</h2>
+  <div class="grid">
+    <label for="reverse"><a target="_blank" data-href="faq24">Reverse Mode</a><sup>5</sup></label>
+    <input type="checkbox" id="reverse">
+    <label for="closeme">Close the source tab when link is pushed</label>
+    <input type="checkbox" id="closeme">
+    <label for="multiple">Open multiple links at once<sup>3</sup></label>
+    <input type="checkbox" id="multiple">
+    <label for="nostop">Open links in both source and destination browsers (for left-click)</label>
+    <input type="checkbox" id="nostop">
+    <label for="faqs">Open FAQs page on updates</label>
+    <input type="checkbox" id="faqs">
+  </div>
+  <div>
+    <span style="margin-top: 10px; margin-bottom: 5px; display: block">Path to the executable<sup>2</sup>:</span>
+    <div style="display: flex;">
+      <input type="text" id="path" style="flex: 1;" placeholder="e.g.: D:\\Firefox\\firefox.exe">
+    </div>
+  </div>
+
+  <div class="admin">To have more control over the input arguments, either create a batch/bash script or try my <a target="_blank" href="https://add0n.com/external-application-button.html">External Application Button</a> extension</div>
+
+  <details style="margin-top: 10px">
+    <summary style="  outline: none; cursor: pointer; user-select: none;">Firefox's <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options" target="_blank">Command Options</a></summary>
+      <table>
+      <thead>
+      <tr>
+        <th>Command</th>
+        <th>Result</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>-browser</td>
+          <td>Start with the browser component. Firefox and SeaMonkey only.</td>
+        </tr>
+        <tr>
+          <td>-foreground</td>
+          <td>Make this instance the active application.</td>
+        </tr>
+        <tr>
+          <td>-headless</td>
+          <td>Runs Firefox in headless mode, which is very useful for purposes such as debugging and automated testing.</td>
+        </tr>
+        <tr>
+          <td>-new-window URL</td>
+          <td>Open URL in a new window. Firefox and SeaMonkey2.x only.</td>
+        </tr>
+        <tr>
+          <td>-private</td>
+          <td>Opens Firefox in permanent private browsing mode. Firefox 3.6 and later only.</td>
+        </tr>
+        <tr>
+          <td>-search term</td>
+          <td>Search term with your default search engine. Firefox and SeaMonkey 2.1 and later only.</td>
+        </tr>
+        <tr>
+          <td>-url URL</td>
+          <td>Open URL in a new tab or window, depend on the browser option.</td>
+        </tr>
+      </tbody>
+    </table>
+  </details>
+
+  <div class="admin">This extension supports managed storage. Some of the preferences can be pre-configured by <a target="_blank" data-href="faq17">the domain administrator</a></div>
+
+  <div id="explore" data-inc=50 data-cols="5"></div>
+  <p>
+    <button id="preview">Usage Preview</button>
+    <button id="yw">Windows Installation</button>
+    <button id="ym">Mac &amp; Linux Installation</button>
+  </p>
+  <p>
+    <button id="reset">Reset Settings</button>
+    <button id="support">Support Development</button> - <button id="save">Save Options</button>
+    <span id="toast"></span>
+  </p>
+
+  <hr style="margin: 10px 0">
+  <ol>
+    <li>It is possible to use "managed storage" to set the default host and URL list. This is useful for administrators to force opening a set of URLs or hostnames in another browser. Instruction on how to setup the managed storage can be found in the FAQs page.</li>
+    <li>On Windows, if the path to the executable is not provided (is empty) <code>%ProgramFiles(x86)%\\Mozilla Firefox\\firefox.exe</code> is used. On Linux, if the path is not set, it is assumed <code>firefox</code> binary can be found in the global PATH environment. On Mac OS, <code>open -a</code> command is used (with <code>firefox</code> as the application or whatever is in the input).</li>
+    <li>By activating this option all the requested URLs are sent to the external executable at once. Only activate this option if the external executable is capable of handling this type of requests.</li>
+    <li>Not all key combinations are allowed in all operating systems.</li>
+    <li>When enabled, all left-click links except the ones that match with at least one condition will be sent to the external executable.</li>
+    <li>If checked, the extension validates top-level navigation with the list of left-click hostnames and URLs. If matched, the URL is sent to the external executable, and the navigation is blocked.</li>
+  </ol style="padding-left: 1.8em;">
+
+  <script src="index.js"></script>
+  <script async src="matched.js"></script>
+</body>
+</html>
