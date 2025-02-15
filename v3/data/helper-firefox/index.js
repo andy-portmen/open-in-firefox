@@ -1,7 +1,5 @@
+/* global runtime */
 'use strict';
-
-const args = new URLSearchParams(location.search);
-const id = args.get('id') || 'com.add0n.node';
 
 let os = 'windows';
 if (navigator.userAgent.indexOf('Mac') !== -1) {
@@ -12,9 +10,34 @@ else if (navigator.userAgent.indexOf('Linux') !== -1) {
 }
 document.body.dataset.os = (os === 'mac' || os === 'linux') ? 'linux' : 'windows';
 
-if (['Lin', 'Win', 'Mac'].indexOf(navigator.platform.substr(0, 3)) === -1) {
-  window.alert('Sorry! The "native client" only supports the following operating systems at the moment:\n\nWindows, Mac, and Linux');
+if (os !== 'linux' && os !== 'mac') {
+  document.querySelector('option[value="org.webextension.bun"]').disabled = true;
 }
+
+if (['Lin', 'Win', 'Mac'].indexOf(navigator.platform.substr(0, 3)) === -1) {
+  alert(`Sorry! The "native client" only supports the following operating systems at the moment:
+
+Windows, Mac, and Linux`);
+}
+
+document.getElementById('extension').textContent = chrome.runtime.id;
+
+const start = () => chrome.runtime.sendNativeMessage(runtime.value, {
+  cmd: 'version'
+}, response => {
+  if (response) {
+    document.title = 'Native Client is installed!';
+    document.body.dataset.installed = true;
+  }
+  else {
+    document.title = 'One Extra Step :: Open in Firefox';
+    document.body.dataset.installed = false;
+  }
+});
+
+runtime.onchange = e => chrome.storage.local.set({
+  native: runtime.value
+}, start);
 
 const notify = (() => {
   const parent = document.getElementById('notify');
@@ -45,11 +68,13 @@ const notify = (() => {
 })();
 
 document.addEventListener('click', ({target}) => {
+  const repo = runtime.value === 'com.add0n.node' ? 'native-client' : 'native-client-bunjs';
+
   if (target.dataset.cmd === 'download') {
     const next = () => {
       notify.show('info', 'Looking for the latest version of the native-client', 60000);
       const req = new window.XMLHttpRequest();
-      req.open('GET', 'https://api.github.com/repos/andy-portmen/native-client/releases/latest');
+      req.open('GET', 'https://api.github.com/repos/andy-portmen/' + repo + '/releases/latest');
       req.responseType = 'json';
       req.onload = () => {
         chrome.downloads.download({
@@ -66,7 +91,7 @@ document.addEventListener('click', ({target}) => {
       req.onerror = () => {
         notify('error', 'Something went wrong! Please download the package manually');
         window.setTimeout(() => {
-          window.open('https://github.com/andy-portmen/native-client/releases');
+          window.open('https://github.com/andy-portmen/' + repo + '/releases');
         }, 5000);
       };
       req.send();
@@ -88,14 +113,19 @@ document.addEventListener('click', ({target}) => {
     }
   }
   else if (target.dataset.cmd === 'check') {
-    chrome.runtime.sendNativeMessage(id, {
+    chrome.runtime.sendNativeMessage(runtime.value, {
       cmd: 'version'
     }, response => {
+      const e = chrome.runtime.lastError;
       if (response) {
         notify.show('success', 'Native client version is ' + response.version);
       }
       else {
-        notify.show('error', 'Cannot find the native client. Follow the 3 steps to install the native client');
+        notify.show(
+          'error',
+          'Cannot find the native client. Follow the 3 steps to install the native client.\n\nLog: ' + e.message,
+          10000
+        );
       }
     });
   }
@@ -104,11 +134,12 @@ document.addEventListener('click', ({target}) => {
   }
 });
 
-chrome.runtime.sendNativeMessage(id, {
-  cmd: 'version'
-}, response => {
-  if (response) {
-    document.title = 'Native Client is installed!';
-    document.body.dataset.installed = true;
-  }
+chrome.storage.local.get({
+  'native': 'com.add0n.node'
+}, prefs => {
+  runtime.value = prefs.native;
+  console.log(prefs);
+
+  start();
 });
+

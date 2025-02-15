@@ -1,21 +1,51 @@
+/* global URLPattern */
 'use strict';
 
+let port;
+try {
+  port = document.getElementById('open-in-firefox-port');
+  port.remove();
+}
+catch (e) {
+  port = document.createElement('span');
+  port.id = 'open-in-firefox-port';
+  document.documentElement.append(port);
+}
+port.addEventListener('open', e => {
+  if (e.detail.url) {
+    chrome.runtime.sendMessage({
+      cmd: 'open-in',
+      url: e.detail.url
+    });
+  }
+  if (e.detail.close) {
+    chrome.runtime.sendMessage({
+      cmd: 'close-me'
+    });
+  }
+});
+
 const config = {
-  enabled: false,
-  button: 0,
-  ctrlKey: false,
-  altKey: true,
-  metaKey: false,
-  shiftKey: true,
-  urls: [],
-  hosts: [],
-  keywords: [],
-  reverse: false,
-  topRedict: false,
-  nostop: false
+  'enabled': false,
+  'button': 0,
+  'ctrlKey': false,
+  'altKey': true,
+  'metaKey': false,
+  'shiftKey': true,
+  'urls': [],
+  'hosts': [],
+  'keywords': [],
+  'reverse': false,
+  'topRedict': false,
+  'nostop': false,
+  'custom-validation': '' // user-defined custom function to validate open in
 };
 chrome.storage.onChanged.addListener(e => {
   Object.keys(e).forEach(n => config[n] = e[n].newValue);
+  if (e['custom-validation']) {
+    port.dataset.script = e['custom-validation'].newValue;
+    port.dispatchEvent(new Event('update'));
+  }
 });
 
 const validate = (a, callback, isTop = false) => {
@@ -30,15 +60,29 @@ const validate = (a, callback, isTop = false) => {
   // URL matching
   if (config.urls.length) {
     const href = a.href;
+
     try {
       for (const h of config.urls) {
-        const m = new window.URLPattern(h);
+        let m;
+        try {
+          m = new URLPattern(h);
+        }
+        catch (e) {
+          try {
+            m = new URLPattern({hostname: h});
+          }
+          catch (e) {
+            m = new URLPattern({pathname: h});
+          }
+        }
+
         if (m.test(href)) {
           return config.reverse ? '' : callback(a.href);
         }
       }
     }
     catch (e) {
+      console.warn('Cannot use URLPattern', e);
       if (href && config.urls.some(h => href.startsWith(h))) {
         return config.reverse ? '' : callback(a.href);
       }
@@ -61,6 +105,9 @@ const validate = (a, callback, isTop = false) => {
   }
 };
 chrome.storage.local.get(config, prefs => {
+  port.dataset.script = prefs['custom-validation'];
+  port.dispatchEvent(new Event('update'));
+
   Object.assign(config, prefs);
   // managed
   chrome.storage.managed.get({
@@ -88,39 +135,6 @@ chrome.storage.local.get(config, prefs => {
         });
       }, true);
     }
-    // Gmail attachments
-    // https://github.com/andy-portmen/open-in/issues/42
-    if (window.top === window && location.hostname === 'mail.google.com') {
-      validate(location, () => {
-        const script = document.createElement('script');
-        script.textContent = `{
-          const hps = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'src');
-          const script = document.currentScript;
-          Object.defineProperty(HTMLIFrameElement.prototype, 'src', {
-            set(v) {
-              if (v && v.indexOf('&view=att&') !== -1) {
-                script.dispatchEvent(new CustomEvent('open-request', {
-                  detail: v
-                }));
-              }
-              else {
-                hps.set.call(this, v);
-              }
-            }
-          });
-        }`;
-        script.addEventListener('open-request', e => {
-          e.stopPropagation();
-          e.preventDefault();
-          chrome.runtime.sendMessage({
-            cmd: 'open-in',
-            url: e.detail
-          });
-        });
-        document.documentElement.appendChild(script);
-        script.remove();
-      }, true);
-    }
   });
 });
 
@@ -137,6 +151,7 @@ document.addEventListener('click', e => {
     });
     return false;
   };
+
   // hostname on left-click
   if (e.button === 0 && !e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
     if (config.hosts.length || config.urls.length || config.keywords.length || config.reverse) {

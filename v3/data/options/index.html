@@ -4,32 +4,34 @@
   <title>Open In Firefox :: Options Page</title>
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="index.css">
+  <link rel="icon" type="image/png" href="/data/icons/32.png">
 </head>
 
 <body>
   <h2>Open with Left-Click</h2>
-  <table class="tbl">
-    <tr>
-      <td colspan="2" style="text-align: left; white-space: normal;"><a target="_blank" data-href="faq16">Comma-separated list of domains</a> to open with the external browser when the link is opened with left-click<sup>1</sup></td>
-    </tr>
-    <tr>
-      <td colspan="2"><textarea id="hosts" style="width: 100%" rows="3" placeholder="e.g.: www.google.com, bing.com"></textarea></td>
-    </tr>
-    <tr>
-      <td colspan="2" style="text-align: left; white-space: normal;">Comma-separated list of URLs to open with the external browser when the link is opened with left-click. This list supports the new <a target="_blank" data-href="faq26">URL Pattern API</a>. You can use "*" to match any character, or non-capturing groups (e.g. <code>/books{/old}?</code>) to make parts of a pattern optional or be matched multiple times. To have arbitrarily complex regex matches use a pattern like <code>/books/(^\d)</code><sup>1</sup></td>
-    </tr>
-    <tr>
-      <td colspan="2"><textarea id="urls" style="width: 100%" rows="3" placeholder="e.g.: https://www.google.com/, https://bing.com/"></textarea></td>
-    </tr>
-    <tr>
-      <td colspan="2" style="text-align: left; white-space: normal;">Comma-separated list of keywords to open with the external browser when the link is opened with left-click<sup>1</sup></td>
-    </tr>
-    <tr>
-      <td colspan="2"><textarea id="keywords" style="width: 100%" rows="3" placeholder="e.g.: firefox"></textarea></td>
-    </tr>
-  </table>
-  <h2>Open With <a target="_blank" data-href="faq7">Keyboard and Mouse Click</a> Combinations</h2>
+  <div class="colstyle">
+    <div><a target="_blank" data-href="faq16">Comma-separated list of domains</a> to open with the external browser when the link is opened with left-click<sup>1</sup></div>
+    <textarea id="hosts" rows="3" placeholder="e.g.: www.google.com, bing.com"></textarea>
+    <div>Comma-separated list of URLs to open with the external browser when the link is opened with left-click. This list supports the new <a target="_blank" data-href="faq26">URL Pattern API</a>. You can use "*" to match any character, or non-capturing groups (e.g. <code>*://*/books{/old}?</code>) to make parts of a pattern optional or be matched multiple times. To have arbitrarily complex regex matches use a pattern like <code>*://*/books/(^\d)</code><sup>1</sup></div>
+    <textarea id="urls" rows="3" placeholder="e.g.: https://www.google.com/, https://bing.com/"></textarea>
+    <div>Comma-separated list of keywords to open with the external browser when the link is opened with left-click<sup>1</sup></div>
+    <textarea id="keywords" rows="3" placeholder="e.g.: firefox"></textarea>
+  </div>
 
+  <h2>Force Open in Firefox</h2>
+  <div class="colstyle">
+    <div><a target="_blank" data-href="faq30">Comma-separated list of page rules</a> to force open with the external browser.</div>
+    <textarea id="urlFilters" rows="3" disabled placeholder="Read FAQs page for more details. Example:
+
+*://*word*/, *://*/*word, R:ht{2}ps*://.*\.go{2}gle\.com"></textarea>
+    <input id="urlFiltersPermission" type="button" value="Grant Host Permission">
+  </div>
+  <p class="grid hidden">
+    <label for="urlFiltersSubFrame">Redirect sub-frames too</label>
+    <input id="urlFiltersSubFrame" type="checkbox">
+  </p>
+
+  <h2>Open With <a target="_blank" data-href="faq7">Keyboard and Mouse Click</a> Combinations</h2>
   <div class="grid">
     <label for="enabled">Enabled</label>
     <input id="enabled" type="checkbox">
@@ -52,6 +54,19 @@
     <label for="topRedict">Top-level navigation<sup>6</sup></label>
     <input type="checkbox" id="topRedict">
   </div>
+  <h2>Open with Click Event</h2>
+  <div style="display: grid; grid-gap: 5px;">
+    <a data-href="faq28" target="_blank">Custom script</a>
+    <textarea id="custom-validation" style="width: 100%" rows="8" placeholder="{}"></textarea>
+  </div>
+  <div>
+
+  </div>
+  <h2><a target="_blank" data-href="faq29">Runtime</a></h2>
+  <select id="native">
+    <option value="com.add0n.node">NodeJS (com.add0n.node)</option>
+    <option value="org.webextension.bun">BunJS (org.webextension.bun)</option>
+  </select>
   <h2>Misc</h2>
   <div class="grid">
     <label for="reverse"><a target="_blank" data-href="faq24">Reverse Mode</a><sup>5</sup></label>
@@ -62,6 +77,10 @@
     <input type="checkbox" id="multiple">
     <label for="nostop">Open links in both source and destination browsers (for left-click)</label>
     <input type="checkbox" id="nostop">
+    <label for="show-open-text">Show "Extract and Open Text Links in Firefox" in right-click context menu</label>
+    <input type="checkbox" id="show-open-text">
+    <label for="show-open-current">Show "Open Link in Firefox" in right-click context menu</label>
+    <input type="checkbox" id="show-open-current">
     <label for="faqs">Open FAQs page on updates</label>
     <input type="checkbox" id="faqs">
   </div>
@@ -71,8 +90,33 @@
       <input type="text" id="path" style="flex: 1;" placeholder="e.g.: D:\\Firefox\\firefox.exe">
     </div>
   </div>
+  <div>
+    <span style="margin-top: 10px; margin-bottom: 5px; display: block">Arguments:</span>
+    <div style="display: flex;">
+      <input type="text" id="args" style="flex: 1;">
+    </div>
+  </div>
 
-  <div class="admin">To have more control over the input arguments, either create a batch/bash script or try my <a target="_blank" href="https://add0n.com/external-application-button.html">External Application Button</a> extension</div>
+  <div class="admin">Default command and arguments:
+    <ul>
+      <li>Window: <code>cmd</code> <code>/s/c start firefox "&Separated-URLs;"</code></li>
+      <li>macOS: <code>open</code> <code>-a fireofx &Expanded-URLs;</code></li>
+      <li>Linux: <code>firefox</code> <code>&Expanded-URLs;</code></li>
+    </ul>
+
+    <p><code>&Separated-URLs;</code> will be replaced with space-separated URL string as a single argument. <code>&Expanded-URLs;</code> will be passed as each URL in separate argument.</p>
+    <div>[Example] Open links in Firefox after selecting a profile:
+      <ul>
+        <li>Windows: <code>C:\Program Files\Mozilla Firefox\firefox.exe</code> <code>-p -url &Expanded-URLs;</code></li>
+        <li>macOS: <code>/Applications/Firefox.app/Contents/MacOS/firefox</code> <code>-p -url &Expanded-URLs;</code></li>
+      </ul>
+
+      :
+    </div>
+    <span>Check the extension's developer console tab for visiting the generated command</span>
+  </div>
+
+  <div class="admin">To have more control over the input arguments, either create a batch/bash script or try my <a target="_blank" href="https://webextension.org/listing/external-application-button.html">External Application Button</a> extension</div>
 
   <details style="margin-top: 10px">
     <summary style="  outline: none; cursor: pointer; user-select: none;">Firefox's <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options" target="_blank">Command Options</a></summary>
@@ -118,7 +162,17 @@
 
   <div class="admin">This extension supports managed storage. Some of the preferences can be pre-configured by <a target="_blank" data-href="faq17">the domain administrator</a></div>
 
-  <div id="explore" data-inc=50 data-cols="5"></div>
+  <h2>Rebranding</h2>
+  <div class="grid" style="margin-bottom: 10px">
+    <span>Custom browser name</span>
+    <input type="text" id="brand-name">
+    <span>Custom browser icon (32x32)</span>
+    <div>
+      <input type="button" value="Reset" id="reset-icon">
+      <input type="button" value="Browse" id="set-icon">
+    </div>
+  </div>
+
   <p>
     <button id="preview">Usage Preview</button>
     <button id="yw">Windows Installation</button>
@@ -140,7 +194,8 @@
     <li>If checked, the extension validates top-level navigation with the list of left-click hostnames and URLs. If matched, the URL is sent to the external executable, and the navigation is blocked.</li>
   </ol style="padding-left: 1.8em;">
 
+  <script src="behave.js"></script>
+  <script src="/convert.js"></script>
   <script src="index.js"></script>
-  <script async src="matched.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 {
-  "name": "Open in Firefox",
+  "name": "Open in Firefox™ Browser",
   "description": "Open current page, link, or all tabs in the Firefox browser with a left-click or through right-click context menu.",
-  "version": "0.4.1",
+  "version": "0.4.5",
   "manifest_version": 3,
   "storage": {
     "managed_schema": "managed.json"
@@ -10,7 +10,11 @@
     "activeTab",
     "storage",
     "contextMenus",
-    "nativeMessaging"
+    "nativeMessaging",
+    "declarativeNetRequestWithHostAccess"
+  ],
+  "optional_host_permissions": [
+    "*://*/*"
   ],
   "optional_permissions": [
     "tabs",
@@ -20,30 +24,42 @@
     "service_worker": "worker.js"
   },
   "icons": {
-    "16": "data/icons/16.png",
-    "32": "data/icons/32.png",
-    "48": "data/icons/48.png",
-    "64": "data/icons/64.png",
-    "128": "data/icons/128.png",
-    "256": "data/icons/256.png",
-    "512": "data/icons/512.png"
+    "16": "/data/icons/16.png",
+    "32": "/data/icons/32.png",
+    "48": "/data/icons/48.png",
+    "64": "/data/icons/64.png",
+    "128": "/data/icons/128.png",
+    "256": "/data/icons/256.png",
+    "512": "/data/icons/512.png"
   },
   "content_scripts": [{
     "matches": ["<all_urls>"],
-    "js": ["data/inject.js"],
+    "js": ["/data/inject/main.js"],
     "run_at": "document_start",
     "all_frames": true,
-    "match_about_blank": true
+    "match_about_blank": true,
+    "world": "MAIN"
+  }, {
+    "matches": ["<all_urls>"],
+    "js": ["/data/inject/isolated.js"],
+    "run_at": "document_start",
+    "all_frames": true,
+    "match_about_blank": true,
+    "world": "ISOLATED"
   }],
   "action": {},
   "options_ui": {
-    "page": "data/options/index.html",
+    "page": "/data/options/index.html",
     "open_in_tab": true
   },
-  "homepage_url": "https://add0n.com/open-in.html?from=firefox",
+  "homepage_url": "https://webextension.org/listing/open-in.html?from=firefox",
   "commands": {
-    "_execute_action": {
-      "description": "Press the action button"
-    }
-  }
+    "_execute_action": {}
+  },
+  "web_accessible_resources": [{
+    "resources": [
+      "/data/redirect/index.html"
+    ],
+    "matches": ["*://*/*"]
+  }]
 }
