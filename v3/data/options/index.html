@@ -99,19 +99,18 @@
 
   <div class="admin">Default command and arguments:
     <ul>
-      <li>Window: <code>cmd</code> <code>/s/c start firefox "&Separated-URLs;"</code></li>
-      <li>macOS: <code>open</code> <code>-a fireofx &Expanded-URLs;</code></li>
+      <li>Window: <code>cmd</code> <code>/s/c start firefox &Separated-URLs;</code></li>
+      <li>macOS: <code>open</code> <code>-a firefox &Expanded-URLs;</code></li>
       <li>Linux: <code>firefox</code> <code>&Expanded-URLs;</code></li>
     </ul>
 
-    <p><code>&Separated-URLs;</code> will be replaced with space-separated URL string as a single argument. <code>&Expanded-URLs;</code> will be passed as each URL in separate argument.</p>
+    <p><code>&Separated-URLs;</code> will be replaced with space-separated URL string as a single argument.</p>
+    <p><code>&Expanded-URLs;</code> will pass URLs as separate arguments.</p>
     <div>[Example] Open links in Firefox after selecting a profile:
       <ul>
-        <li>Windows: <code>C:\Program Files\Mozilla Firefox\firefox.exe</code> <code>-p -url &Expanded-URLs;</code></li>
+        <li>Windows: <code>"C:\Program Files\Mozilla Firefox\firefox.exe"</code> <code>-p -url &Expanded-URLs;</code></li>
         <li>macOS: <code>/Applications/Firefox.app/Contents/MacOS/firefox</code> <code>-p -url &Expanded-URLs;</code></li>
       </ul>
-
-      :
     </div>
     <span>Check the extension's developer console tab for visiting the generated command</span>
   </div>

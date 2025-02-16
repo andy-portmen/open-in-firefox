@@ -135,10 +135,10 @@ const open = (urls, closeIDs = []) => {
     const {command, args, options = {}} = builder.generate(os, prefs.path, prefs.args);
     args.forEach((arg, n) => {
       if (arg === '&Expanded-URLs;') {
-        args[n] = urls;
+        args[n] = options.shell ? urls.map(s => `"${s}"`) : urls;
       }
       else if (arg.includes('&Separated-URLs;')) {
-        args[n] = arg.replace('&Separated-URLs;', urls.join(' '));
+        args[n] = arg.replace('&Separated-URLs;', urls.map(s => `"${s}"`).join(' '));
       }
     });
 
@@ -148,6 +148,7 @@ const open = (urls, closeIDs = []) => {
     exec(command, args.flat(), r => {
       if (os.mac === false && os.linux === false) {
         if (!prefs.path) {
+          console.error(r);
           if (r && r.code !== 0) {
             find(() => open(urls, closeIDs));
             return;

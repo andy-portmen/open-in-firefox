@@ -30,23 +30,32 @@ builder.generate = (os, path, sarg = '') => {
       const args = sarg ? builder.parse(sarg) : ['&Expanded-URLs;'];
       return {
         command: path,
-        args
+        args,
+        options: {
+          windowsVerbatimArguments: true,
+          shell: true
+        }
       };
     }
     else {
       // Firefox is not detaching the process on Windows
-      const cmd = sarg ? `firefox ${sarg}` : `firefox "&Separated-URLs;"`;
+      const cmd = sarg ? `firefox ${sarg}` : `firefox &Separated-URLs;`;
       if (navigator.userAgent.includes('Firefox')) {
         return {
           command: 'cmd',
-          args: ['/s/c', 'start /WAIT', cmd]
+          args: ['/s/c', 'start /WAIT', cmd],
+          options: {
+            windowsVerbatimArguments: true,
+            shell: true
+          }
         };
       }
       return {
         command: 'cmd',
         args: ['/s/c', 'start', cmd],
         options: {
-          windowsVerbatimArguments: true
+          windowsVerbatimArguments: true,
+          shell: true
         }
       };
     }
