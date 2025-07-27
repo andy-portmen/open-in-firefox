@@ -108,7 +108,8 @@
     <p><code>&Expanded-URLs;</code> will pass URLs as separate arguments.</p>
     <div>[Example] Open links in Firefox after selecting a profile:
       <ul>
-        <li>Windows: <code>"C:\Program Files\Mozilla Firefox\firefox.exe"</code> <code>-p -url &Expanded-URLs;</code></li>
+        <li>Windows (without shell): <code>C:\PROGRA~1\MOZILL~1\firefox.exe</code> <code>-p -url &Expanded-URLs;</code></li>
+        <li>Windows (with shell): <code>"C:\Program Files\Mozilla Firefox\firefox.exe"</code> <code>-p -url &Expanded-URLs;</code></li>
         <li>macOS: <code>/Applications/Firefox.app/Contents/MacOS/firefox</code> <code>-p -url &Expanded-URLs;</code></li>
       </ul>
     </div>

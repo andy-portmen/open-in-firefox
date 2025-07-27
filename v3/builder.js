@@ -4,15 +4,15 @@ self.importScripts('termlib_parser.js');
 
 const builder = {};
 
-builder.generate = (os, path, sarg = '') => {
+builder.generate = (os, prefs, sarg = '') => {
   if (os.mac) {
-    if (path && path.startsWith('/')) {
+    if (prefs.path && prefs.path.startsWith('/')) {
       return {
-        command: path,
+        command: prefs.path,
         args: sarg ? builder.parse(sarg) : ['&Expanded-URLs;']
       };
     }
-    const args = sarg ? builder.parse(sarg) : ['-a', path || 'firefox', '&Expanded-URLs;'];
+    const args = sarg ? builder.parse(sarg) : ['-a', prefs.path || 'firefox', '&Expanded-URLs;'];
     return {
       command: 'open',
       args
@@ -21,19 +21,20 @@ builder.generate = (os, path, sarg = '') => {
   else if (os.linux) {
     const args = sarg ? builder.parse(sarg) : ['&Expanded-URLs;'];
     return {
-      command: path || 'firefox',
+      command: prefs.path || 'firefox',
       args
     };
   }
   else {
-    if (path) {
+    if (prefs.path) {
       const args = sarg ? builder.parse(sarg) : ['&Expanded-URLs;'];
       return {
-        command: path,
+        command: prefs.path,
         args,
         options: {
           windowsVerbatimArguments: true,
-          shell: true
+          shell: prefs.path.includes(' '),
+          windowsHide: true
         }
       };
     }
@@ -46,7 +47,7 @@ builder.generate = (os, path, sarg = '') => {
           args: ['/s/c', 'start /WAIT', cmd],
           options: {
             windowsVerbatimArguments: true,
-            shell: true
+            shell: false
           }
         };
       }
@@ -55,7 +56,7 @@ builder.generate = (os, path, sarg = '') => {
         args: ['/s/c', 'start', cmd],
         options: {
           windowsVerbatimArguments: true,
-          shell: true
+          shell: false
         }
       };
     }

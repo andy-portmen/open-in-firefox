@@ -132,7 +132,7 @@ const open = (urls, closeIDs = []) => {
       }
     };
 
-    const {command, args, options = {}} = builder.generate(os, prefs.path, prefs.args);
+    const {command, args, options = {}} = builder.generate(os, prefs, prefs.args);
     args.forEach((arg, n) => {
       if (arg === '&Expanded-URLs;') {
         args[n] = options.shell ? urls.map(s => `"${s}"`) : urls;
@@ -144,6 +144,7 @@ const open = (urls, closeIDs = []) => {
 
     console.info('[command]', command);
     console.info('[arguments]', args.flat());
+    console.info('[options]', options);
 
     exec(command, args.flat(), r => {
       if (os.mac === false && os.linux === false) {
