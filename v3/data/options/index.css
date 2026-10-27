@@ -64,7 +64,8 @@ body {
 #tab1:checked ~ .tab-nav label[for="tab1"],
 #tab2:checked ~ .tab-nav label[for="tab2"],
 #tab3:checked ~ .tab-nav label[for="tab3"],
-#tab4:checked ~ .tab-nav label[for="tab4"] {
+#tab4:checked ~ .tab-nav label[for="tab4"],
+#tab5:checked ~ .tab-nav label[for="tab5"] {
   background-color: #fff;
   color: #1a73e8;
   border-color: #dadce0;
@@ -75,7 +76,8 @@ body {
 #tab1:checked ~ #content1,
 #tab2:checked ~ #content2,
 #tab3:checked ~ #content3,
-#tab4:checked ~ #content4 {
+#tab4:checked ~ #content4,
+#tab5:checked ~ #content5 {
   display: block;
 }
 
@@ -94,7 +96,8 @@ h2 {
 #content1 h2:first-child,
 #content2 h2:first-child,
 #content3 h2:first-child,
-#content4 h2:first-child {
+#content4 h2:first-child,
+#content5 h2:first-child {
   margin-top: 0;
 }
 
@@ -265,5 +268,113 @@ th {
 #toast {
   font-weight: 500;
   color: #188038;
+}
+
+/* Native Client tab */
+#content4 p {
+  padding: 10px;
+  margin: 0 0 10px 0;
+}
+
+#content4 details {
+  margin: 10px 0 10px 20px;
+}
+
+summary {
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+code {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0 5px;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.note {
+  color: #696969;
+  background-color: #f3f3f3;
+  font-size: 13px;
+  padding-inline: 20px;
+}
+
+#native-status {
+  font-weight: 500;
+}
+
+#native-status[data-type=success] {
+  color: #188038;
+}
+
+#native-status[data-type=error] {
+  color: #d93025;
+}
+
+body[data-os=linux] .windows {
+  display: none;
+}
+
+body[data-os=windows] .linux {
+  display: none;
+}
+
+body[data-step="1"] .step1 {
+  opacity: 0.7;
+}
+
+body[data-installed=true] #steps>li {
+  opacity: 0.7;
+}
+
+body[data-installed=true] #alternative {
+  font-weight: bold;
+  color: red;
+}
+
+#notify {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 300px;
+}
+
+#notify>div {
+  display: flex;
+  align-items: center;
+  padding: 10px 10px 10px 40px;
+  border: solid 1px #ccc;
+  background-position: left 10px center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  margin: 5px 0;
+  white-space: break-spaces;
+}
+
+#notify>div[data-type=success] {
+  background-image: url('success.svg');
+  background-color: #abf8b6;
+  color: #006f00;
+  border-color: #30d053;
+}
+
+#notify>div[data-type=error] {
+  background-image: url('error.svg');
+  background-color: #ff787d;
+  color: #fff;
+  border-color: #ff3857;
+}
+
+#notify>div[data-type=info] {
+  background-image: url('info.svg');
+  background-color: #ffea9f;
+  color: #744b00;
+  border-color: #ffcd17;
 }
 

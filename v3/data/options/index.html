@@ -13,12 +13,14 @@
     <input type="radio" name="tabs" id="tab2" class="tab-radio">
     <input type="radio" name="tabs" id="tab3" class="tab-radio">
     <input type="radio" name="tabs" id="tab4" class="tab-radio">
+    <input type="radio" name="tabs" id="tab5" class="tab-radio">
 
     <div class="tab-nav">
       <label for="tab1">Automation Rules</label>
       <label for="tab2">Shortcuts</label>
       <label for="tab3">Browser Executable</label>
-      <label for="tab4">Other Settings</label>
+      <label for="tab4">Native Client</label>
+      <label for="tab5">Other Settings</label>
     </div>
 
     <!-- Tab 1: Automation Rules -->
@@ -95,14 +97,6 @@
 
     <!-- Tab 3: Browser Executable -->
     <div class="tab-content" id="content3">
-      <div class="grid">
-        <label for="native"><a target="_blank" data-href="faq29">Runtime</a></label>
-        <select id="native">
-          <option value="com.add0n.node">NodeJS (com.add0n.node)</option>
-          <option value="org.webextension.bun">BunJS (org.webextension.bun)</option>
-        </select>
-      </div>
-
       <h2>Executable Path & Arguments</h2>
       <div>
         <span style="margin-top: 10px; margin-bottom: 5px; display: block">Path to the executable<sup>1</sup>:</span>
@@ -195,8 +189,39 @@
       </div>
     </div>
 
-    <!-- Tab 4: Settings & Help -->
+    <!-- Tab 4: Native Client -->
     <div class="tab-content" id="content4">
+      <h2>Installation</h2>
+      <p>For the extension to open links in the Firefox browser, download, unzip, and install the open-source native client:</p>
+      <ol id="steps">
+        <li>Select native <a target="_blank" data-href="faq29">runtime</a>: <select id="runtime">
+          <option value="com.add0n.node">NodeJS (com.add0n.node)</option>
+          <option value="org.webextension.bun" disabled>BunJS (org.webextension.bun)</option>
+        </select></li>
+        <li class="step1">Click <a href="#" data-cmd="download">here</a> to download the package for your OS (Window, Mac, and Linux operating systems are currently supported) or click <a href="https://github.com/andy-portmen/native-client/releases" target="_blank">NodeJS Runtime</a> to browse all available download options.</li>
+        <li>Extract the downloaded package in a local directory</li>
+        <li class="linux">Now open a terminal in this directory (the directory that contains install.sh and uninstall.sh) and run <code>./install.sh</code></li>
+        <li class="windows">Now double-click the <code>install.bat</code> file</li>
+      </ol>
+      <div class="flex">
+        <input type="button" data-cmd="check" value="Check Connection Status">
+        <span id="native-status"></span>
+      </div>
+      <p class="note"><span id="alternative">If the connection check succeeds but links still fail to open, the executable path is likely wrong on the <a href="#" data-cmd="options">Browser Executable tab</a>.</span></p>
+
+      <details>
+        <summary>Notes</summary>
+        <p class="note">"com.add0n.node" is based on <a href="https://nodejs.org/en" target="_blank">NodeJS</a> and is available for Windows, macOS, and Linux. This package includes NodeJS binary for your operating system and uses it if you don't have NodeJS installed on your system.</p>
+        <p class="note">The installer script copies a few files to two different locations for your browser to be able to detect this native client. If you already have NodeJS in your system, the installed version of NodeJS will be used. So please make sure you have an up-to-date version of NodeJS installed. If you don't have this application, the portable version will be used. Read more <a target="_blank" href="https://github.com/andy-portmen/native-client">here</a>.</p>
+        <p class="note">To completely remove this native client, run <code class="linux">./uninstall.sh</code><code class="windows">uninstall.bat</code>.</p>
+        <p class="note">If you are using an unpacked extension, make sure to include the extension id (<code id="extension">-</code>) into the <code>config.js</code> file and reinstall.</p>
+      </details>
+
+      <div id="notify"></div>
+    </div>
+
+    <!-- Tab 5: Other Settings -->
+    <div class="tab-content" id="content5">
       <h2>Misc Settings</h2>
       <div class="grid">
         <label for="reverse"><a target="_blank" data-href="faq24">Reverse Mode</a><sup>1</sup></label>
@@ -251,5 +276,6 @@
   <script src="behave.js"></script>
   <script src="/convert.js"></script>
   <script src="index.js"></script>
+  <script src="native-client.js"></script>
 </body>
 </html>

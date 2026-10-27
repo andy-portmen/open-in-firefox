@@ -1,5 +1,7 @@
-/* global runtime */
+/* global selectTab */
 'use strict';
+
+const runtime = document.getElementById('runtime');
 
 let os = 'windows';
 if (navigator.userAgent.indexOf('Mac') !== -1) {
@@ -10,32 +12,26 @@ else if (navigator.userAgent.indexOf('Linux') !== -1) {
 }
 document.body.dataset.os = (os === 'mac' || os === 'linux') ? 'linux' : 'windows';
 
-if (os !== 'linux' && os !== 'mac') {
-  document.querySelector('option[value="org.webextension.bun"]').disabled = true;
-}
-
-if (['Lin', 'Win', 'Mac'].indexOf(navigator.platform.substr(0, 3)) === -1) {
-  alert(`Sorry! The "native client" only supports the following operating systems at the moment:
-
-Windows, Mac, and Linux`);
-}
-
 document.getElementById('extension').textContent = chrome.runtime.id;
+
+const status = document.getElementById('native-status');
 
 const start = () => chrome.runtime.sendNativeMessage(runtime.value, {
   cmd: 'version'
 }, response => {
   if (response) {
-    document.title = 'Native Client is installed!';
+    status.textContent = 'Native client is installed!';
+    status.dataset.type = 'success';
     document.body.dataset.installed = true;
   }
   else {
-    document.title = 'One Extra Step :: Open in Firefox';
+    status.textContent = 'Native client is not installed';
+    status.dataset.type = 'error';
     document.body.dataset.installed = false;
   }
 });
 
-runtime.onchange = e => chrome.storage.local.set({
+runtime.onchange = () => chrome.storage.local.set({
   native: runtime.value
 }, start);
 
@@ -89,7 +85,7 @@ document.addEventListener('click', ({target}) => {
         });
       };
       req.onerror = () => {
-        notify('error', 'Something went wrong! Please download the package manually');
+        notify.show('error', 'Something went wrong! Please download the package manually');
         window.setTimeout(() => {
           window.open('https://github.com/andy-portmen/' + repo + '/releases');
         }, 5000);
@@ -123,14 +119,15 @@ document.addEventListener('click', ({target}) => {
       else {
         notify.show(
           'error',
-          'Cannot find the native client. Follow the 3 steps to install the native client.\n\nLog: ' + e.message,
+          'Cannot find the native client. Follow the steps to install the native client.\n\nLog: ' + e.message,
           10000
         );
       }
     });
   }
   else if (target.dataset.cmd === 'options') {
-    chrome.runtime.openOptionsPage();
+    document.getElementById('tab3').checked = true;
+    document.getElementById('path').focus();
   }
 });
 
@@ -138,8 +135,23 @@ chrome.storage.local.get({
   'native': 'com.add0n.node'
 }, prefs => {
   runtime.value = prefs.native;
-  console.log(prefs);
-
   start();
 });
 
+// open the Native Client tab when the background page requests it
+const activate = () => {
+  selectTab('tab4');
+  chrome.storage.session.remove('page');
+};
+
+chrome.storage.session.get('page', ({page}) => {
+  if (page === 'native-client') {
+    activate();
+  }
+});
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'session' && changes.page && changes.page.newValue === 'native-client') {
+    activate();
+  }
+});

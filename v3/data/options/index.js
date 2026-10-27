@@ -28,10 +28,6 @@ function favicon(href) {
   }
 }
 
-if (navigator.userAgent.includes('Mac') === false && navigator.userAgent.indexOf('Linux') === false) {
-  document.querySelector('option[value="org.webextension.bun"]').disabled = true;
-}
-
 function restore() {
   // Use default value color = 'red' and likesColor = true.
   chrome.storage.local.get({
@@ -57,7 +53,6 @@ function restore() {
     'show-open-text': true,
     'show-open-current': true,
     'custom-validation': '',
-    'native': 'com.add0n.node',
     'urlFilters': []
   }, prefs => {
     document.getElementById('enabled').checked = prefs.enabled;
@@ -83,7 +78,6 @@ function restore() {
     document.getElementById('show-open-current').checked = prefs['show-open-current'];
     document.getElementById('show-open-text').checked = prefs['show-open-text'];
     document.getElementById('custom-validation').value = prefs['custom-validation'];
-    document.getElementById('native').value = prefs['native'];
     document.getElementById('urlFilters').value = prefs['urlFilters'].join(', ');
   });
 }
@@ -141,7 +135,6 @@ async function save() {
     'show-open-text': document.getElementById('show-open-text').checked,
     'show-open-current': document.getElementById('show-open-current').checked,
     'custom-validation': document.getElementById('custom-validation').value,
-    'native': document.getElementById('native').value,
     urlFilters
   }, () => {
     restore();
@@ -250,3 +243,35 @@ chrome.permissions.contains({
     document.getElementById('urlFilters').disabled = false;
   }
 });
+
+// reflect the active tab in the URL hash so refresh (and links) restore it
+const tabHashes = {
+  tab1: 'rules',
+  tab2: 'shortcuts',
+  tab3: 'executable',
+  tab4: 'native-client',
+  tab5: 'settings'
+};
+const tabIds = Object.fromEntries(Object.entries(tabHashes).map(([id, hash]) => [hash, id]));
+
+function selectTab(id) {
+  const radio = document.getElementById(id);
+  if (radio) {
+    radio.checked = true;
+    radio.dispatchEvent(new Event('change'));
+  }
+}
+
+function tabFromHash() {
+  const id = tabIds[location.hash.slice(1)];
+  if (id) {
+    document.getElementById(id).checked = true;
+  }
+}
+
+for (const radio of document.querySelectorAll('.tab-radio')) {
+  radio.addEventListener('change', () => history.replaceState(null, '', '#' + tabHashes[radio.id]));
+}
+
+window.addEventListener('hashchange', tabFromHash);
+tabFromHash();

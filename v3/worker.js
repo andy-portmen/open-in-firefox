@@ -43,23 +43,9 @@ function response(res, success = () => {}) {
     error(res);
   }
   else if (!res) {
-    chrome.tabs.query({
-      url: chrome.runtime.getURL('*')
-    }, tbs => {
-      if (tbs && tbs.length) {
-        chrome.windows.update(tbs[0].windowId, {
-          focused: true
-        });
-        chrome.tabs.update(tbs[0].id, {
-          active: true
-        });
-      }
-      else {
-        chrome.tabs.create({
-          url: 'data/helper-firefox/index.html'
-        });
-      }
-    });
+    chrome.storage.session.set({
+      page: 'native-client'
+    }, () => chrome.runtime.openOptionsPage());
   }
   else {
     success();
