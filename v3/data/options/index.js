@@ -15,6 +15,25 @@ new Behave({
   fence: false
 });
 
+// comma-separated textareas: single logical line, wrapped visually
+for (const ta of document.querySelectorAll('#hosts, #urls, #keywords, #urlFilters')) {
+  // Enter inserts a comma instead of a newline
+  ta.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      ta.setRangeText(', ', ta.selectionStart, ta.selectionEnd, 'end');
+    }
+  });
+  // pasted/inserted newlines become commas instead of breaking the list
+  ta.addEventListener('input', () => {
+    if (ta.value.includes('\n')) {
+      const pos = ta.selectionStart;
+      ta.value = ta.value.replace(/\r?\n+/g, ',');
+      ta.setSelectionRange(pos, pos);
+    }
+  });
+}
+
 function favicon(href) {
   const favicon = document.querySelector('link[rel="icon"]');
   if (href) {
@@ -121,13 +140,13 @@ async function save() {
     'faqs': document.getElementById('faqs').checked,
     'closeme': document.getElementById('closeme').checked,
     'multiple': document.getElementById('multiple').checked,
-    'urls': urls.split(/\s*,\s*/)
+    'urls': urls.split(/\s*[,\n]\s*/)
       .filter((h, i, l) => h && l.indexOf(h) === i),
-    'hosts': hosts.split(/\s*,\s*/).map(s => s.replace('http://', '')
+    'hosts': hosts.split(/\s*[,\n]\s*/).map(s => s.replace('http://', '')
       .replace('https://', '')
       .split('/')[0].trim())
       .filter((h, i, l) => h && l.indexOf(h) === i),
-    'keywords': document.getElementById('keywords').value.split(/\s*,\s*/).filter(a => a),
+    'keywords': document.getElementById('keywords').value.split(/\s*[,\n]\s*/).filter(a => a),
     'reverse': document.getElementById('reverse').checked,
     'topRedict': document.getElementById('topRedict').checked,
     'nostop': document.getElementById('nostop').checked,

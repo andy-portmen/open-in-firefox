@@ -221,6 +221,15 @@ textarea, input[type="text"] {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+/* grow with content while staying full-width (field-sizing is Chromium-only;
+   other browsers gracefully fall back to the rows attribute) */
+textarea {
+  field-sizing: content;
+  min-width: 100%;
+  min-height: 6rem;
+  max-height: 12rem;
+}
+
 textarea:focus, input[type="text"]:focus {
   border-color: #1a73e8;
   box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
