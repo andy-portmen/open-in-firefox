@@ -87,9 +87,18 @@
         <input type="checkbox" id="topRedict">
       </div>
 
+      <h2>Test this Combination</h2>
+      <div class="capture">
+        <div>Try it here: press your combination as a mouse click inside the box below. This shows what the browser actually delivers, so you can verify the combination works on your operating system before saving.</div>
+        <div id="capture-area" tabindex="0">
+          <span>Click here with your combination</span>
+        </div>
+        <div id="capture-result"></div>
+      </div>
+
       <div class="footnotes">
         <ol>
-          <li>Not all key combinations are allowed in all operating systems.</li>
+          <li>Not all key combinations are allowed in all operating systems. <span class="client mac"><b>Recommended:</b> <code>Alt + Shift + Click</code>. Avoid <code>Ctrl + Click</code> (the browser delivers it as a right-click) and <code>Meta</code>/⌘ based combinations (intercepted by the browser). Use the Test section below to find out what Meta means on your system.</span><span class="client linux"><b>Recommended:</b> <code>Alt + Shift + Click</code> or <code>Ctrl + Shift + Click</code>. Avoid plain <code>Alt + Click</code> (used by desktops like GNOME and KDE to drag windows) and the Meta/Windows key.</span><span class="client windows"><b>Recommended:</b> <code>Alt + Shift + Click</code>. Avoid the Meta (Windows ⊞) key — it is intercepted by the operating system.</span></li>
           <li>If checked, the extension validates top-level navigation with the list of left-click hostnames and URLs. If matched, the URL is sent to the external executable, and the navigation is blocked.</li>
         </ol>
       </div>

@@ -263,6 +263,103 @@ chrome.permissions.contains({
   }
 });
 
+// Shortcut capture: reflect the active tab OS hints and test the combination
+const clientOS = (() => {
+  if (/Mac/.test(navigator.userAgent)) {
+    return 'mac';
+  }
+  if (/Windows/.test(navigator.userAgent)) {
+    return 'windows';
+  }
+  return 'linux';
+})();
+document.body.dataset.client = clientOS;
+
+{
+  const area = document.getElementById('capture-area');
+  const result = document.getElementById('capture-result');
+  const BUTTONS = ['Left Click', 'Middle Click (wheel)', 'Right Click'];
+  const META = clientOS === 'mac' ? '⌘ Cmd (Meta)' : clientOS === 'windows' ? 'Win ⊞ (Meta)' : 'Meta';
+  // show the OS-native name of the Meta key in the combination selector
+  const metaLabel = document.getElementById('metaKey').closest('label');
+  metaLabel.firstChild.textContent = META + ' ';
+  const MODIFIERS = [
+    ['metaKey', META],
+    ['ctrlKey', 'Ctrl'],
+    ['altKey', 'Alt'],
+    ['shiftKey', 'Shift']
+  ];
+
+  function warnings(e) {
+    const msgs = [];
+    if (clientOS === 'mac') {
+      if (e.type === 'contextmenu') {
+        msgs.push('⚠ Ctrl + Click on macOS is delivered by the browser as a right-click — it cannot be captured as a click combination. Use Alt instead.');
+      }
+      else if (e.ctrlKey) {
+        msgs.push('⚠ On macOS the browser may deliver this Ctrl + Click as a right-click. Use Alt instead.');
+      }
+      if (e.metaKey) {
+        msgs.push('⚠ Meta on macOS is the ⌘ Cmd key — Cmd + Click is intercepted by the browser (opens a new tab) and may never reach the page.');
+      }
+    }
+    else if (clientOS === 'windows' && e.metaKey) {
+      msgs.push('⚠ The Meta key on Windows is the Windows (⊞) key, which is usually intercepted by the operating system.');
+    }
+    else if (clientOS === 'linux' && e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+      msgs.push('⚠ On Linux desktops (GNOME, KDE, …) a plain Alt + Click is used to drag windows. Add another modifier such as Shift.');
+    }
+    if (e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey) {
+      msgs.push('⚠ Shift + Click alone also opens a new window in Chrome.');
+    }
+    return msgs;
+  }
+
+  function describe(e) {
+    const btn = BUTTONS[e.button] || 'Button ' + e.button;
+    const mods = MODIFIERS.filter(([key]) => e[key]).map(([, label]) => label);
+    return btn + (mods.length ? ' + ' + mods.join(' + ') : ' (no modifiers)');
+  }
+
+  function onDown(e) {
+    e.preventDefault();
+    const received = describe(e);
+    const enabled = document.getElementById('enabled').checked;
+    const configButton = Number(document.getElementById('button').value);
+    const configMods = {
+      altKey: document.getElementById('altKey').checked,
+      ctrlKey: document.getElementById('ctrlKey').checked,
+      metaKey: document.getElementById('metaKey').checked,
+      shiftKey: document.getElementById('shiftKey').checked
+    };
+    const matches = enabled && e.button === configButton &&
+      MODIFIERS.every(([key]) => configMods[key] === e[key]);
+
+    area.dataset.captured = true;
+    let html = '<div>Received: <code>' + received + '</code></div>';
+    if (matches) {
+      result.dataset.type = 'match';
+      html += '<div>✓ This combination was received by the browser and matches the configured combination.</div>';
+    }
+    else {
+      result.dataset.type = 'mismatch';
+      html += '<div>' + (enabled ? 'This does not match the configured combination above. Click and hold the combo you intend to use.</div>' : 'The combination is not enabled. Check "Enabled" above.</div>');
+    }
+    const msgs = warnings(e);
+    if (msgs.length) {
+      html += msgs.map(m => '<div data-kind="warn">' + m + '</div>').join('');
+    }
+    result.innerHTML = html;
+    if (msgs.length) {
+      result.dataset.type = msgs.length === 1 ? 'warning' : 'mismatch';
+    }
+  }
+
+  area.addEventListener('mousedown', onDown);
+  area.addEventListener('contextmenu', onDown);
+  area.addEventListener('click', e => e.preventDefault());
+}
+
 // reflect the active tab in the URL hash so refresh (and links) restore it
 const tabHashes = {
   tab1: 'rules',

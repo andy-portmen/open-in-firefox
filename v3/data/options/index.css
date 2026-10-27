@@ -318,6 +318,62 @@ code {
   font-weight: 500;
 }
 
+/* per-OS footnote visibility ("mac on macOS", etc.) */
+.client {
+  display: none;
+}
+
+body[data-client=mac] .client.mac,
+body[data-client=linux] .client.linux,
+body[data-client=windows] .client.windows {
+  display: inline;
+}
+
+/* shortcut capture box */
+.capture {
+  display: grid;
+  grid-gap: 8px;
+  margin-bottom: 10px;
+}
+
+#capture-area {
+  border: 2px dashed #bdc1c6;
+  border-radius: 4px;
+  padding: 24px 10px;
+  text-align: center;
+  user-select: none;
+  background-color: #f8f9fa;
+  color: #3c4043;
+  outline: none;
+}
+
+#capture-area:hover,
+#capture-area:focus {
+  border-color: #1a73e8;
+  background-color: #e8f0fe;
+}
+
+#capture-area[data-captured=true] {
+  border-style: solid;
+  border-color: #188038;
+}
+
+#capture-result {
+  font-size: 13px;
+}
+
+#capture-result[data-type=match] {
+  color: #188038;
+}
+
+#capture-result[data-type=mismatch] {
+  color: #d93025;
+}
+
+#capture-result[data-type=warning] {
+  color: #e37400;
+}
+
 #native-status[data-type=success] {
   color: #188038;
 }
