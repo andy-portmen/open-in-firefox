@@ -226,7 +226,7 @@ textarea, input[type="text"] {
 textarea {
   field-sizing: content;
   min-width: 100%;
-  min-height: 6rem;
+  min-height: 4rem;
   max-height: 12rem;
 }
 
